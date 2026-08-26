@@ -1,0 +1,29 @@
+# Node
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# Laravel / PHP
+backend/vendor/
+backend/.env
+backend/.phpunit.result.cache
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Composer
+composer.lock
+
+# Build
+dist/
+build/
+
+# Other
+.env
