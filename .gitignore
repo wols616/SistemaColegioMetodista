@@ -8,6 +8,10 @@ backend/vendor/
 backend/.env
 backend/.phpunit.result.cache
 
+# Docker local data
+postgres_data/
+n8n_data/
+
 # OS / Editor
 .DS_Store
 Thumbs.db
@@ -27,3 +31,4 @@ build/
 
 # Other
 .env
+.env.*

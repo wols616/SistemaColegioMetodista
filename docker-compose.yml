@@ -1,0 +1,86 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cma_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cma_database
+      POSTGRES_USER: cma_user
+      POSTGRES_PASSWORD: secretpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cma_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cma_backend
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    working_dir: /var/www/html
+    volumes:
+      - ./backend:/var/www/html
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8000
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: cma_database
+      DB_USERNAME: cma_user
+      DB_PASSWORD: secretpassword
+      CACHE_DRIVER: file
+      QUEUE_CONNECTION: sync
+      SESSION_DRIVER: file
+    command: >
+      sh -c "composer install --no-interaction --prefer-dist --no-progress
+      && php artisan serve --host=0.0.0.0 --port=8000"
+    networks:
+      - cma_network
+
+  frontend:
+    image: node:20-alpine
+    container_name: cma_frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: >
+      sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    networks:
+      - cma_network
+
+  n8n:
+    image: n8nio/n8n
+    container_name: cma_n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      N8N_HOST: http://localhost:5678
+      N8N_PORT: 5678
+      WEBHOOK_URL: http://localhost:5678/
+      GENERIC_TIMEZONE: America/Mexico_City
+      TZ: America/Mexico_City
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - cma_network
+
+volumes:
+  postgres_data:
+  n8n_data:
+
+networks:
+  cma_network:
+    driver: bridge

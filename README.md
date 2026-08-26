@@ -28,6 +28,17 @@ Instrucciones rápidas:
   - composer require laravel/sanctum (si no está instalado)
   - php artisan migrate (después de configurar la base de datos)
 
+Docker Compose:
+- Desde la raíz del proyecto:
+  - docker compose config
+  - docker compose build
+  - docker compose up -d
+- Servicios incluidos:
+  - PostgreSQL 16 en localhost:5432
+  - Backend Laravel en localhost:8000
+  - Frontend Vite en localhost:5173
+  - n8n en localhost:5678
+
 Notas:
 - No se han implementado funcionalidades aún; sólo la estructura inicial.
-- Requisitos locales: Node.js (>=16), npm, PHP, Composer. Docker es opcional.
+- Requisitos locales: Node.js (>=20.19 recomendado), npm, PHP 8.1, Composer y Docker Desktop o Docker Engine activos.
